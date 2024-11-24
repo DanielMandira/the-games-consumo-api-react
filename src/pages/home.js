@@ -1,9 +1,22 @@
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import Container from "@/components/Container";
 import Menu from "@/components/Menu";
 import Footer from "@/components/Footer";
 import HomeContent from "@/components/HomeContent";
+
 export default function Homepage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      // Se não houver token, redireciona para a página de login
+      router.push("/");
+    }
+  }, [router]);
+
   return (
     <>
       <Head>
@@ -22,4 +35,3 @@ export default function Homepage() {
     </>
   );
 }
-

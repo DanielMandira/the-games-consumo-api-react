@@ -1,25 +1,30 @@
 import styles from "@/components/Menu/Menu.module.css";
-
+import Link from "next/link";
+import { useRouter } from "next/router";
 const Menu = () => {
+  const router = useRouter();
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    router.push("/");
+  };
   return (
     <>
       <nav className={styles.navbar}>
         <div className={styles.logo}>
-          <a href="#">
+          <Link href="/">
             <img src="images/thegames_symbol.png" alt="The Games" />
-          </a>
+          </Link>
         </div>
         <div className={styles.menu}>
           <ul className={styles.menuItems} id="menuItems">
             <li>
-              <a href="#">Home</a>
+              <Link href="/home">Home</Link>
             </li>
             <li>
-              <a href="#">Cadastrar jogos</a>
+              <Link href="/create">Cadastrar jogos</Link>
             </li>
             <li>
-              <a href="#">Logout</a>
-            </li>
+            <a href="/"  onClick={handleLogout}>Logout</a>            </li>
           </ul>
         </div>
         <div className={styles.menuBtn} id="menuBtn">

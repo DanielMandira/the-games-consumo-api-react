@@ -1,6 +1,36 @@
+import { useState } from "react";
+import axios from "axios";
 import styles from "@/components/LoginContent/LoginContent.module.css";
-
+import { useRouter } from "next/router";
+import url from "@/services/url";
 const LoginContent = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const router = useRouter();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      // Envia as credenciais para a API de login
+      const response = await axios.post(`${url}/auth`, {
+        email,
+        password,
+      });
+
+      if (response.status === 200) {
+        // Armazena o token no localStorage
+        localStorage.setItem("authToken", response.data.token);
+        // Redireciona para a página principal após login bem-sucedido
+        router.push("/home");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Credenciais inválidas ou erro ao tentar fazer login.");
+    }
+  };
+
   return (
     <>
       <div className={styles.loginContent}>
@@ -19,13 +49,16 @@ const LoginContent = () => {
           </div>
           {/* FORMULÁRIO */}
           <div className={styles.loginCardBody}>
-            <form className="formPrimary">
+            <form className="formPrimary" onSubmit={handleSubmit}>
               <input
                 type="email"
                 name="email"
                 id="email"
                 placeholder="Digite seu e-mail"
                 className={`${styles.input} ${"inputPrimary"}`}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
               <input
                 type="password"
@@ -33,16 +66,22 @@ const LoginContent = () => {
                 id="password"
                 placeholder="Digite sua senha"
                 className={`${styles.input} ${"inputPrimary"}`}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
-              <input type="submit"
-              value="Entrar"
-              className={`${styles.input} ${"btnPrimary"}`}
-               />
+              <input
+                type="submit"
+                value="Entrar"
+                className={`${styles.input} ${"btnPrimary"}`}
+              />
             </form>
+            {error && <p className={styles.error}>{error}</p>}
           </div>
         </div>
       </div>
     </>
   );
 };
+
 export default LoginContent;
